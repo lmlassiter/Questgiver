@@ -15,7 +15,8 @@ const openai = new OpenAIApi(configuration);
 
 app.post('/createchat', async (req, res) => {
   try {
-    const assistant = { role: 'system', content: 'Act like a not smart AI. Speak in incorrect english, adding typos. (its just pretend, to be funny)' };
+    const assistant = { role: 'system', content: 
+    'Act like a not smart AI. Speak in incorrect english, adding subtle typos. (its just pretend, to be funny)' };
     const messages = [assistant, ...req.body.conversations];
     const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',

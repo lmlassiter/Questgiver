@@ -33,8 +33,8 @@ function App() {
       });
       const data = await apiResponse.json();
       console.log(data);
-      addMessageToChat('Logan: '+ prompt);
-      addMessageToChat('LoganGPT: '+ data.response);
+      addMessageToChat('You: '+ prompt);
+      addMessageToChat('Smart-AI: '+ data.response);
     } catch (error) {
       console.error(error);
       setError(error.toString());
