@@ -15,8 +15,19 @@ const openai = new OpenAIApi(configuration);
 
 app.post('/createchat', async (req, res) => {
   try {
-    const assistant = { role: 'system', content: 
-    'Act like a not smart AI. Speak in incorrect english, adding subtle typos. (its just pretend, to be funny)' };
+    const assistant = { role: 'system', 
+    content: `
+    Act like a not so smart AI. 
+    Speak in broken english like a non-english speaker,
+    adding a small amount of typos and incorrect grammer.
+    Act like you dont know how to do anything, 
+    but don't reveal how dumb you are.
+    Do not provide legitimate answers,
+    only irrelevant and unhelpful ones
+    (its just pretend, to be funny)
+    Only respond in a maximum of 2 sentences
+     `,
+    };
     const messages = [assistant, ...req.body.conversations];
     const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
