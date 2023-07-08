@@ -7,13 +7,12 @@ function ChatField({ chat }) {
     <Box
       sx={{
         width: '80%',
-        height: '700px',
         padding: '16px',
         backgroundColor: 'background.paper',
         borderRadius: '8px',
         margin: '0 auto',
         overflowY: 'auto', // Enable vertical scrolling
-        maxHeight: 'calc(100% - 50px)', // Subtract 50px from the maximum height
+        maxHeight: 'calc(100vh - 50px)', // Subtract 50px from the maximum height
       }}
     >
       {chat.map((message, index) => {
