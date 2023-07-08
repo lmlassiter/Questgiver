@@ -4,9 +4,11 @@ AI gives a quest.
 The prompt fails are relatively low, but possible. Reload or ask again.
 
 To use the App, Clone and make a .env including your Org and API code from OPENAI
+
 OPEN_AI_KEY= xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
 OPEN_AI_ID=org-[ID]
-PORT=3001
+
 
 npm start will start the server and the app.
 
