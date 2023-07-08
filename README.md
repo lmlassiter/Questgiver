@@ -1,5 +1,5 @@
-# metafarce
-AI or something
+# AI Questing Giver
+AI gives a quest.
 
 
 

@@ -22,6 +22,33 @@ function App() {
     // Handle prompt change logic here if needed
   };
 
+  const formatResponse = (response) => {
+    const lines = [];
+  
+    // Extract the name, quest name, requirements, and dialogue from the response
+    const matches = response.match(/Name: (.+)\sQuest Name: (.+)\sRequirements: (.+)\s(.+): "(.+)"/);
+    if (matches && matches.length === 6) {
+      const name = matches[1];
+      const questName = matches[2];
+      const requirements = matches[3];
+      const dialogueName = matches[4];
+      const dialogue = matches[5];
+  
+      // Format the response lines
+      lines.push(name);
+      lines.push('Quest Name: ' + questName);
+      lines.push('Requirements: ' + requirements);
+      lines.push(dialogueName + ': "' + dialogue + '"');
+    } else {
+      // If the response format doesn't match the expected pattern, simply display the response as is
+      lines.push(response);
+      console.log("Couldn't format");
+    }
+  
+    return lines.join('\n'); // Join the lines with line breaks
+  };
+  
+  
   const fetchResponse = async (prompt) => {
     try {
       const apiResponse = await fetch('http://localhost:3001/createchat', {
@@ -33,13 +60,25 @@ function App() {
       });
       const data = await apiResponse.json();
       console.log(data);
-      addMessageToChat('You: '+ prompt);
-      addMessageToChat('Smart-AI: '+ data.response);
+  
+      const formattedResponse = formatResponse(data.response); // Format the AI response
+  
+      // Check if the formatted response contains multiple lines
+      const responseLines = formattedResponse.split('\n');
+      if (responseLines.length > 1) {
+        addMessageToChat('You: ' + prompt);
+        addMessageToChat(responseLines); // Add the formatted response as an array of lines
+      } else {
+        // If it's a single line, treat it as a regular message
+        addMessageToChat('You: ' + prompt);
+        addMessageToChat(formattedResponse);
+      }
     } catch (error) {
       console.error(error);
       setError(error.toString());
     }
   };
+  
 
   return (
     <ThemeProvider theme={theme}>
