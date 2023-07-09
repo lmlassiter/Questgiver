@@ -13,6 +13,7 @@ const theme = createTheme({
 function App() {
   const [chat, setChat] = useState([]);
   const [error, setError] = useState(null);
+  const [questGiven, setQuestGiven] = useState(false);
 
   const addMessageToChat = (message) => {
     setChat((prevChat) => [...prevChat, message]);
@@ -23,34 +24,48 @@ function App() {
   };
 
   const formatResponse = (response) => {
-    const lines = [];
-  
-    // Extract the name, quest name, requirements, and dialogue from the response
-    const matches = response.match(/Name: (.+)\sQuest Name: (.+)\sRequirements: (.+)\s(.+): "(.+)"/);
-    if (matches && matches.length === 6) {
+    const matches = response.match(/Name: (.+)\nQuest Name: (.+)\nRequirements: (.+)\n([\s\S]+)/);
+    if (matches) {
       const name = matches[1];
       const questName = matches[2];
       const requirements = matches[3];
-      const dialogueName = matches[4];
-      const dialogue = matches[5];
+      const rewardAndDialogue = matches[4].trim();
   
-      // Format the response lines
-      lines.push(name);
+      const lines = [];
+      lines.push('Name: ' + name);
       lines.push('Quest Name: ' + questName);
       lines.push('Requirements: ' + requirements);
-      lines.push(dialogueName + ': "' + dialogue + '"');
-    } else {
-      // If the response format doesn't match the expected pattern, simply display the response as is
-      lines.push(response);
-      console.log("Couldn't format");
-    }
+      lines.push('Reward: ' + rewardAndDialogue);
   
-    return lines.join('\n'); // Join the lines with line breaks
+      setQuestGiven(true);
+      return lines.join('\n');
+    } else {
+      console.log("Couldn't format");
+      return response;
+    }
   };
   
+
   
+  
+  
+  
+
+const handleQuestAccept = () => {
+  const questNameMessage = chat.find((message) => typeof message === 'string' && message.startsWith('Quest Name: '));
+  if (questNameMessage) {
+    const questName = questNameMessage.replace('Quest Name: ', '').trim();
+    const message = `Quest "${questName}" accepted.`; // Extract the quest name and include it in the message
+    addMessageToChat(message); // Add the quest acceptance message to the chat
+  }
+};
+
+
+
   const fetchResponse = async (prompt) => {
     try {
+      addMessageToChat('You: ' + prompt); // Add the player's input to the chat
+  
       const apiResponse = await fetch('http://localhost:3001/createchat', {
         method: 'POST',
         headers: {
@@ -66,11 +81,9 @@ function App() {
       // Check if the formatted response contains multiple lines
       const responseLines = formattedResponse.split('\n');
       if (responseLines.length > 1) {
-        addMessageToChat('You: ' + prompt);
         addMessageToChat(responseLines); // Add the formatted response as an array of lines
       } else {
         // If it's a single line, treat it as a regular message
-        addMessageToChat('You: ' + prompt);
         addMessageToChat(formattedResponse);
       }
     } catch (error) {
@@ -86,7 +99,12 @@ function App() {
       <div>
         {error ? <p>Error: {error}</p> : null}
         <ChatField chat={chat} />
-        <TextBox onPromptChange={handlePromptChange} fetchResponse={fetchResponse} />
+        <TextBox
+          onPromptChange={handlePromptChange}
+          fetchResponse={fetchResponse}
+          onQuestAccept={handleQuestAccept}
+          questGiven={questGiven}
+        />
       </div>
     </ThemeProvider>
   );

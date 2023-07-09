@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Paper, Typography } from '@mui/material';
-import "./chatfield.css";
+import './chatfield.css';
 
 function ChatField({ chat }) {
   return (
@@ -12,7 +12,8 @@ function ChatField({ chat }) {
         borderRadius: '8px',
         margin: '0 auto',
         overflowY: 'auto', // Enable vertical scrolling
-        maxHeight: 'calc(100vh - 50px)', // Subtract 50px from the maximum height
+        maxHeight: 'calc(100vh - 250px)', // Subtract 50px from the maximum height
+        marginTop: '100px',
       }}
     >
       {chat.map((message, index) => {
@@ -56,6 +57,21 @@ function ChatField({ chat }) {
           </Paper>
         );
       })}
+      {chat.includes("Quest: The Mysterious Mirror accepted.") && (
+        <Paper
+          elevation={3}
+          sx={{
+            padding: '12px',
+            marginBottom: '16px',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            color: 'text.primary',
+          }}
+        >
+          <Typography variant="body1" sx={{ color: 'text.primary' }}>
+            Quest: The Mysterious Mirror accepted.
+          </Typography>
+        </Paper>
+      )}
     </Box>
   );
 }
