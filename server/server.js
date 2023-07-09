@@ -15,28 +15,20 @@ const openai = new OpenAIApi(configuration);
 
 app.post('/createchat', async (req, res) => {
   try {
-    const assistant = { role: 'system', 
-    content: `
-    You are an NPC in a Skyrim-like game. Your goal is to give the user a 
-    quest using the Skyrim dialogue box format.
-    Follow this format:
-    Name: (creative name)
-    Quest Name: (name)
-    Requirements: (one-sentence quest requirement)
-    Reward: (Reasonable XP Amount, and occasionally an Item)
-    (Name): ""
-    In the response, introduce yourself, explain the problem, 
-    and provide the specific task. This game is set in a town, 
-    focused entirely on dialogue with no combat. The player 
-    cannot leave the town. Quests are specific tasks around town
-    like work or talking to someone.
-     `,
-    };
-    const messages = [assistant, ...req.body.conversations];
+    const conversations = req.body.conversations.map((conversation) => {
+      return {
+        role: conversation.role,
+        content: conversation.content,
+      };
+    });
+    
+    
     const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
-      messages: messages,
+      messages: conversations,
     });
+
+    console.log('OpenAI response:', response); // Add this line for debugging
 
     const replyMessage = response.data.choices[0].message;
     const replyContent = replyMessage.content;
@@ -47,6 +39,9 @@ app.post('/createchat', async (req, res) => {
     res.status(500).json({ error: 'OpenAI cannot connect' });
   }
 });
+
+
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

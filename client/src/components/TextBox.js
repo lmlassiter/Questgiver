@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button } from '@mui/material';
 
-function TextBox({ prompt, onPromptChange, fetchResponse, onQuestAccept, questGiven }) {
+function TextBox({ prompt, onPromptChange, fetchResponse, onQuestAccept, questGiven, acceptedQuestName }) {
   const [text, setText] = useState('');
   const [showAcceptMessage, setShowAcceptMessage] = useState(false);
   const [questDecision, setQuestDecision] = useState(null);
@@ -23,12 +23,13 @@ function TextBox({ prompt, onPromptChange, fetchResponse, onQuestAccept, questGi
   const handleAcceptQuest = () => {
     onQuestAccept();
     setShowAcceptMessage(true);
-    setQuestDecision('accepted');
+    setQuestDecision('accepted');// Pass the second argument as `true` to indicate quest acceptance
     setTimeout(() => {
       setShowAcceptMessage(false);
       setShowDecisionMessage(false); // Hide decision message as well
     }, 5000);
   };
+  
 
   const handleDeclineQuest = () => {
     setQuestDecision('declined');
@@ -103,7 +104,7 @@ function TextBox({ prompt, onPromptChange, fetchResponse, onQuestAccept, questGi
         </div>
       )}
       {showAcceptMessage && questDecision === 'accepted' && (
-        <p style={{ color: 'green', marginTop: '16px' }}>Quest Accepted!</p>
+        <p style={{ color: 'green', marginTop: '16px' }}>Quest "{acceptedQuestName}" accepted!</p>
       )}
       {showDecisionMessage && questDecision === 'declined' && (
         <p style={{ color: 'red', marginTop: '16px' }}>Quest Declined.</p>
