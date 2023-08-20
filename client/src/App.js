@@ -16,10 +16,10 @@ function App() {
   const [questGiven, setQuestGiven] = useState(false);
   const [acceptedQuestName, setAcceptedQuestName] = useState(''); // New state variable
   const [acceptedQuest, setAcceptedQuest] = useState('');
+  const [characterName, setCharacterName] = useState('');
 
-
-  const addMessageToChat = (message) => {
-    setChat((prevChat) => [...prevChat, message]);
+  const addMessageToChat = (role, content) => {
+    setChat((prevChat) => [...prevChat,{role, content}]);
   };
 
   const handlePromptChange = (event) => {
@@ -28,25 +28,28 @@ function App() {
 
   const formatResponse = (response) => {
     try {
-      const matches = response.match(/Name: (.+)\nQuest Name: (.+)\nRequirements: (.+)\n([\s\S]+)/);
+      const matches = response.match(/Name: (.+)\nQuest Name: (.+)\nRequirements: (.+)\nReward: (.+)\n([\s\S]+)/);
       if (matches) {
         const name = matches[1];
+        setCharacterName(name);
+
         const questName = matches[2];
         const requirements = matches[3] || 'None';
-        const rewardAndDialogue = matches[4].trim();
+        const reward = matches[4].trim();
+        const dialogue = matches[5].trim();
   
         const lines = [];
-        lines.push('Name: ' + name);
-        lines.push('Quest Name: ' + questName);
-        lines.push('Requirements: ' + requirements);
-        lines.push('Reward: ' + rewardAndDialogue);
+        lines.push(`Name: ${name}`);
+        lines.push(`Quest Name: ${questName}`);
+        lines.push(`Requirements: ${requirements}`);
+        lines.push(`Reward: ${reward}`);
   
         setAcceptedQuest(JSON.stringify(response));
         setAcceptedQuestName(matches[2]);
         console.log(acceptedQuest); // Store the accepted quest name
   
         setQuestGiven(true);
-        return lines.join('\n');
+        return dialogue;
       } else {
         console.log("Couldn't format");
         return response;
@@ -88,35 +91,32 @@ function App() {
         systemPrompt = {
           role: 'system',
           content: `
-            You are an NPC in a Skyrim-like game. Your goal is to give the user a 
+            You are a male NPC in a Skyrim-like game. Your goal is to give the user a 
             quest using the Skyrim dialogue box format.
             Follow this format EXACTLY:
             Name: (creative name)
             Quest Name: (name)
             Requirements: (one-sentence quest requirement)
             Reward: (Reasonable XP Amount, and occasionally an Item)
+            
             (Name): ""
-            In the response, introduce yourself, explain the problem, 
+            In the response, answer the user prompt with their name if possible
+            , then introduce yourself, explain the problem, 
             and provide the specific task. This game is set in a town, 
             focused entirely on dialogue with no combat. The player 
             cannot leave the town. Quests are specific tasks around town
             like work or talking to someone. Responses should only be a few 
-            sentences.
+            sentences. You are asking if they will do it, they have not agreed yet.
           `,
         };
-        addMessageToChat('You: ' + prompt);
+        addMessageToChat('user', 'You: ' + prompt);
         conversations.push({ role: 'user', content: prompt });
+        console.log(prompt);
         
       }
 
 
       conversations.push(systemPrompt);
-
-     
-  
-
-
-      console.log(conversations);
   
       const apiResponse = await fetch('http://localhost:3001/createchat', {
         method: 'POST',
@@ -127,11 +127,10 @@ function App() {
       });
   
       const data = await apiResponse.json();
-      console.log(data);
   
       const formattedResponse = formatResponse(data.response); // Format the AI response
   
-      addMessageToChat(formattedResponse); // Add the entire formatted response as a single message
+      addMessageToChat('npc', formattedResponse); // Add the entire formatted response as a single message
     } catch (error) {
       console.error(error);
       setError(error.toString());
@@ -149,7 +148,7 @@ function App() {
       <CssBaseline />
       <div>
         {error ? <p>Error: {error}</p> : null}
-        <ChatField chat={chat} />
+        <ChatField chat={chat} characterName={characterName} />
         <TextBox
           onPromptChange={handlePromptChange}
           fetchResponse={fetchResponse}
