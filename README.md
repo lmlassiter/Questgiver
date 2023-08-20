@@ -12,8 +12,7 @@ OPEN_AI_ID=org-[ID]
 
 npm start will start the server and the app.
 
-![Demo NPC](./Quest_Giver_demo.gif)
-
+<img src="https://github.com/lmlassiter/metafarce/blob/main/Quest_Giver_Demo.gif" alt="Demo NPC" width="600">
 
 <img src="https://github.com/lmlassiter/metafarce/blob/main/Quest_Giver_Demo.png" alt="demo-image" width="600">
 
