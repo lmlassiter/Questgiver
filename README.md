@@ -22,7 +22,6 @@ BE: Express, GPT-3.5-TURBO
 
 
 
-
 Music: Now We Ride by Alexander Nakarada | https://www.serpentsoundstudios.com
 Creative Commons CC BY 4.0
 https://creativecommons.org/licenses/by/4.0/
