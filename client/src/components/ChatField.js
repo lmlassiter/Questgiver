@@ -12,7 +12,7 @@ function ChatField({ chat, characterName }) {
   let [userText, setUserText] = useState("");
   const [ran, setRan] = useState(-1);
 
-  const startTypingAnimation = (role, message) => {
+  const startTypingAnimation = (role) => {
     setIsTyping(true);
     setCurrentRole(role);
   };
@@ -108,11 +108,28 @@ function ChatField({ chat, characterName }) {
     >
 </Box>
 
-      <Box component="div" marginBottom={2}>
+<Box
+        sx={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          flexDirection: 'column',
+          position: 'absolute',
+          bottom: '120px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '80%',
+          height: 'max-content',
+          borderColor: "#A0A0A0",
+          borderStyle: "solid",
+          padding: "20px",
+          borderRadius: "15px"
+        }}
+      >
         <Paper elevation={3} sx={{
           padding: '12px',
           marginBottom: '16px',
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          width: '100%',
+          backgroundColor: 'rgba(0,0,0,0.5)',
           color: 'text.primary',
         }}>
           <Typography variant="body1">
