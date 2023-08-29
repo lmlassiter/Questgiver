@@ -145,7 +145,6 @@ function App() {
         };
         addMessageToChat('user', 'You: ' + prompt);
         conversations.push({ role: 'user', content: prompt });
-        console.log(prompt);
         
       }
 

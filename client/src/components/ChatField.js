@@ -8,6 +8,9 @@ import talkingGif from "../NPC/talking.gif";
 function ChatField({ chat, characterName }) {
   const [isTyping, setIsTyping] = useState(false);
   const [currentRole, setCurrentRole] = useState(null);
+  let [npcText, setNpcText] = useState("...");
+  let [userText, setUserText] = useState("");
+  const [ran, setRan] = useState(-1);
 
   const startTypingAnimation = (role, message) => {
     setIsTyping(true);
@@ -18,6 +21,20 @@ function ChatField({ chat, characterName }) {
     setIsTyping(false);
     setCurrentRole(null);
   };
+
+  useEffect(() =>{
+    setRan(ran+1);
+    if(ran>=0){
+      setCurrentRole(chat[ran].role);
+      console.log(chat[ran].role);
+      if(chat[ran].role === "user"){
+        setUserText(chat[ran].content);
+      } else if(chat[ran].role === "npc"){
+        setNpcText(chat[ran].content);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[chat]);
 
   return (
     <div>
@@ -69,18 +86,12 @@ function ChatField({ chat, characterName }) {
           >
             {characterName || "Name: Unknown"}
           </Typography>
-  
-          {chat.map((message, index) => {
-            if (message.role === 'npc') {
-              const content = Array.isArray(message.content) ? message.content.join(" ") : message.content;
-              return (
-                <Typography key={index} variant="body1" color="text.primary">
-                  <CharacterTyping text={content} onAnimationStart={() => startTypingAnimation(message.role, content)} onAnimationEnd={endTypingAnimation} />
-                </Typography>
-              );
-            }
-            return null;
-          })}
+          
+          <Typography variant="body1" color="text.primary">
+          {currentRole === "npc" ? <CharacterTyping text={npcText} onAnimationStart={() => startTypingAnimation(currentRole, npcText)} onAnimationEnd={endTypingAnimation} /> : npcText}
+          </Typography>
+
+
         </Box>
       </Box>
 <Box
@@ -97,13 +108,7 @@ function ChatField({ chat, characterName }) {
     >
 </Box>
 
-{chat.map((message, index) => {
-  const role = message.role || 'user';
-  const content = Array.isArray(message.content) ? message.content.join(" ") : message.content;
-
-  if (role === 'user') {
-    return (
-      <Box key={index} component="div" marginBottom={2}>
+      <Box component="div" marginBottom={2}>
         <Paper elevation={3} sx={{
           padding: '12px',
           marginBottom: '16px',
@@ -111,14 +116,10 @@ function ChatField({ chat, characterName }) {
           color: 'text.primary',
         }}>
           <Typography variant="body1">
-            <CharacterTyping text={content} onAnimationStart={() => startTypingAnimation(role, content)} onAnimationEnd={endTypingAnimation} />
+          {currentRole === 'user' ? <CharacterTyping text={userText} onAnimationStart={() => startTypingAnimation(currentRole, userText)} onAnimationEnd={endTypingAnimation} /> : userText}
           </Typography>
         </Paper>
       </Box>
-    );
-  }
-  return null;
-})}
 </div>
 );
 }

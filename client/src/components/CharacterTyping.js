@@ -6,7 +6,6 @@ const CharacterTyping = ({ text, onAnimationStart, onAnimationEnd }) => {
 
   useEffect(() => {
     onAnimationStart(); // Start talking animation
-
     const nextChar = text[charactersTyped]; // Next character to type
     if (nextChar) {
       const updateTimeout = setTimeout(() => {
@@ -21,8 +20,11 @@ const CharacterTyping = ({ text, onAnimationStart, onAnimationEnd }) => {
 
       return () => clearTimeout(updateTimeout);
     } else {
-      onAnimationEnd(); // End talking animation
+      if(currentText.length === text.length){
+        onAnimationEnd(); // End talking animation
+      }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [charactersTyped, text, onAnimationStart, onAnimationEnd]);
 
   return <>{currentText}</>;
