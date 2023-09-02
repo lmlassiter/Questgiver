@@ -5,6 +5,7 @@ import PauseIcon from "@mui/icons-material/Pause";
 import TextBox from './components/TextBox';
 import ChatField from './components/ChatField';
 import audioFile from './assets/Now-We-Ride.mp3';
+import { QuestBox } from './components/QuestBox';
 
 // Create a custom dark theme
 const theme = createTheme({
@@ -21,6 +22,8 @@ function App() {
   const [acceptedQuestName, setAcceptedQuestName] = useState(''); // New state variable
   const [acceptedQuest, setAcceptedQuest] = useState('');
   const [characterName, setCharacterName] = useState('');
+  const [questRequirements, setQuestRequirements] = useState(''); // New state variable for quest requirements
+  const [questReward, setQuestReward] = useState(''); // New state variable for quest reward
 
   const audioRef = useRef();
   const [isPlaying, setIsPlaying] = useState(false);
@@ -73,6 +76,9 @@ function App() {
         const reward = matches[4].trim();
         const dialogue = matches[5].trim();
   
+        setQuestRequirements(requirements);
+        setQuestReward(reward);
+
         const lines = [];
         lines.push(`Name: ${name}`);
         lines.push(`Quest Name: ${questName}`);
@@ -207,17 +213,23 @@ function App() {
             <TextBox
               onPromptChange={handlePromptChange}
               fetchResponse={fetchResponse}
-              onQuestAccept={handleQuestAccept}
-              questGiven={questGiven}
-              acceptedQuestName={acceptedQuestName}
             />
+          {questGiven && acceptedQuestName ? (
+              <QuestBox
+                name={characterName}
+                questName={acceptedQuestName}
+                requirements={questRequirements}
+                reward={questReward}
+                onQuestAccept={handleQuestAccept}
+              />
+          ) : null}
           </div>
           <audio ref={audioRef} loop>
             <source src={audioFile} type="audio/mpeg" />
           </audio>
         </>
       )}
-    </ThemeProvider>
+  </ThemeProvider>
   );
   
 }

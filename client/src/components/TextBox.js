@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { TextField, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { TextField } from '@mui/material';
 
-function TextBox({ prompt, onPromptChange, fetchResponse, onQuestAccept, questGiven, acceptedQuestName }) {
+function TextBox({ prompt, onPromptChange, fetchResponse }) {
   const [text, setText] = useState('');
-  const [showAcceptMessage, setShowAcceptMessage] = useState(false);
-  const [questDecision, setQuestDecision] = useState(null);
-  const [showDecisionMessage, setShowDecisionMessage] = useState(false);
 
   const handleTextChange = (event) => {
     setText(event.target.value);
@@ -20,32 +17,6 @@ function TextBox({ prompt, onPromptChange, fetchResponse, onQuestAccept, questGi
     }
   };
 
-  const handleAcceptQuest = () => {
-    onQuestAccept();
-    setShowAcceptMessage(true);
-    setQuestDecision('accepted');// Pass the second argument as `true` to indicate quest acceptance
-    setTimeout(() => {
-      setShowAcceptMessage(false);
-      setShowDecisionMessage(false); // Hide decision message as well
-    }, 5000);
-  };
-  
-
-  const handleDeclineQuest = () => {
-    setQuestDecision('declined');
-    setShowDecisionMessage(true);
-    setTimeout(() => {
-      setShowDecisionMessage(false); // Hide decision message after 5 seconds
-    }, 5000);
-  };
-
-  useEffect(() => {
-    if (!questGiven) {
-      setShowAcceptMessage(false);
-      setQuestDecision(null);
-      setShowDecisionMessage(false); // Hide decision message
-    }
-  }, [questGiven]);
 
   return (
     <div
@@ -91,24 +62,7 @@ function TextBox({ prompt, onPromptChange, fetchResponse, onQuestAccept, questGi
               borderColor: 'grey',
             },
           },
-        }}
-      />
-      {questGiven && !showAcceptMessage && questDecision === null && (
-        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'space-between' }}>
-          <Button variant="contained" onClick={handleAcceptQuest} color="primary">
-            Accept
-          </Button>
-          <Button variant="contained" onClick={handleDeclineQuest} color="secondary">
-            Decline
-          </Button>
-        </div>
-      )}
-      {showAcceptMessage && questDecision === 'accepted' && (
-        <p style={{ color: 'green', marginTop: '16px' }}>Quest "{acceptedQuestName}" accepted!</p>
-      )}
-      {showDecisionMessage && questDecision === 'declined' && (
-        <p style={{ color: 'red', marginTop: '16px' }}>Quest Declined.</p>
-      )}
+        }}></TextField> 
     </div>
   );
 }

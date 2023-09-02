@@ -117,7 +117,7 @@ function ChatField({ chat, characterName }) {
           bottom: '120px',
           left: '50%',
           transform: 'translateX(-50%)',
-          width: '80%',
+        width: '80%',
           height: 'max-content',
           borderColor: "#A0A0A0",
           borderStyle: "solid",
